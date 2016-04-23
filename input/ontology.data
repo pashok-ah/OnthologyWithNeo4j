@@ -1,0 +1,22 @@
+<classes>
+tank{
+ material: iron,
+ colour: gray
+};
+artillery{
+ weight: 10_tones
+};
+ light-tank{
+ weight: 5_tones,
+ colour: black
+}
+</classes>
+<relationships>
+ light-tank -> tank;
+ artillery -> tank
+</relationships>
+<instances>
+pablus:light-tank{
+ weight: 3_tones
+}
+</instances>
