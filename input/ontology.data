@@ -1,22 +1,231 @@
 <classes>
-tank{
- material: iron,
- colour: gray
+NavalVessel{
+ mission: sea_battles
 };
-artillery{
- weight: 10_tones
+SailShip{
+ propulsion: sails,
+ primaryMaterial: wood
 };
- light-tank{
- weight: 5_tones,
- colour: black
-}
+OarsAndSailShip{
+ propulsion: oars_and_sails,
+ primaryMaterial: wood
+};
+SteamEngineShip{
+ propulsion: steam_engine
+};
+TurbineShip{
+ propulsion: turbine
+};
+Dhow{
+ period: ancient,
+ inventedBy: Arabs_or_Indians,
+ navigation: kamal
+};
+Galley{
+
+};
+Bireme{
+  period: ancient,
+  inventedBy: Phoenicians,
+  primaryWeapon: naval_ram,
+  length: 24m,
+  beam: 3 m
+};
+Tessarakonteres{
+    period: ancient,
+    inventedBy: Greek,
+    primaryWeapon: catapults,
+    length: 130 m,
+    beam: 17 m,
+    crew: 7250
+};
+Junk{
+  period: ancient,
+  inventedBy: Chinese,
+  primaryWeapon: warriors
+};
+Longship{
+  period: medieval,
+  inventedBy: Vikings,
+  primaryWeapon: warriors,
+  navigation: sunstone
+};
+Drekkar{
+ pairsOfOars: 30-34,
+
+};
+Skeid{
+ pairsOfOars: 30-34,
+ length: 30m-37m,
+ crew: 70-80
+};
+Snekkja{
+ pairsOfOars: 20,
+     length: 17 m,
+     beam: 2.5 m,
+     crew: 41
+};
+Birlinn{
+  period: medieval,
+  inventedBy: Scotch,
+  pairsOfOars: 12-20
+};
+Caravel{
+ period: 15th_century,
+ primaryWeapon: bombards,
+ inventedBy: Portuguese
+};
+Galleon{
+ period: 16th_century,
+ inventedBy: Venetians,
+ primaryWeapon: canons
+};
+Frigate{
+primaryWeapon: canons,
+maxCanons: 60
+};
+Man-of-war{
+ period: 16th_century,
+ primaryWeapon: canons,
+ maxCanons: 124,
+ maxDisplacement: 5000 tons,
+ maxLength: 60m
+};
+Ship_of_the_line{
+ period: 17th_century,
+ displacement: 500-5500 tons,
+ maxCanons: 135
+};
+Monitor{
+primaryWeapon: towers_with_heavy-calibre_guns
+};
+Ironclad{
+period: 19th_century,
+material: metal
+};
+Aircraft_carrier{
+period: 20th_century,
+primaryWeapon: aircrafts
+};
+Nimitz-class{
+displacement: 101600–106300 tons,
+propulsion: turbines_and_nuclear_reactors,
+crew:  5000+,
+ length: 332.8 m,
+ beam: 76.8 m,
+ draught: 11.3 m
+};
+Battleship{
+
+};
+Yamato-class{
+displacement: 69988 long tons,
+propulsion: 12_Kanpon_boilers_driving_4_steam_turbines,
+crew:  2767,
+ length: 263 m,
+ beam: 36.9 m,
+ draught: 10.4 m
+
+};
 </classes>
 <relationships>
- light-tank -> tank;
- artillery -> tank
+ SailShip -> NavalVessel;
+ OarsAndSailShip -> NavalVessel;
+ SteamEngineShip -> NavalVessel;
+ TurbineShip -> NavalVessel;
+ Dhow -> SailShip;
+ Galley -> OarsAndSailShip;
+ Bireme -> Galley;
+ Tessarakonteres -> Galley;
+ Junk -> SailShip;
+ Longship -> OarsAndSailShip;
+ Drekkar -> Longship;
+ Skeid -> Longship;
+ Snekkja -> Longship;
+ Birlinn -> OarsAndSailShip;
+ Caravel -> SailShip;
+ Galleon -> SailShip;
+ Frigate -> SailShip;
+ Man-of-war -> SailShip;
+ Ship_of_the_line -> SailShip;
+ Monitor -> Ironclad;
+ Ironclad -> SteamEngineShip;
+ Aircraft_carrier -> TurbineShip;
+ Battleship -> TurbineShip;
+ Nimitz-class -> Aircraft_carrier;
+ Yamato-class -> Battleship;
 </relationships>
 <instances>
-pablus:light-tank{
- weight: 3_tones
-}
+Ivlia:Bireme{
+ displacement: 26tonnes
+};
+Ormen_Lange:Drekkar{
+ ownedBy: King_Olav_Tryggvason,
+ pairsOfOars: 34
+};
+Mora:Drekkar{
+ ownedBy: William_The_Conqueror
+};
+Saint_Christopher:Caravel{
+ usedBy: Bartolomeu_Dias
+};
+Pinta:Caravel{
+ usedBy: Christopher_Columbus,
+ length: 17 m,
+ beam: 5.36 m,
+ draught: 2.31 m,
+ crew: 26
+};
+Botafogo:Galleon{
+ ownedBy: Portuguese,
+ displacement: 1000 tons,
+ armament: 366 canons
+};
+HMS_Victory:Ship_of_the_line{
+usedBy: Horatio_Nelson,
+country: British_Empire,
+armament: 104 canons,
+crew: 1000,
+ length: 69.34 m,
+ beam: 15.80 m,
+ draught: 8.76 m,
+};
+USS_Constitution:Frigate{
+country: USA,
+displacement: 2200 tons,
+armament: 52 canons,
+crew: 450,
+ length: 63 m,
+ beam: 13.26 m,
+ draught: 7.2 m
+};
+USS_Monitor:Monitor{
+country: USA,
+displacement: 987 long tons,
+armament: 2 × 280 mm_guns,
+crew: 49,
+ length: 54.6 m,
+ beam: 12.6 m,
+ draught: 3.2 m
+};
+USS_Abraham_Lincoln:Nimitz-class{
+ displacement: 104112 long tons,
+ crew:  5680,
+ armament:
+2 × Mk 57 Mod 3 Sea Sparrow_
+2 × RIM-116 Rolling Airframe Missile_
+3 × Phalanx CIWS,
+ aircraft carried:	90_fixed_wing_and_helicopters
+};
+Yamato:Yamato-class{
+country: Empire_of_Japan,
+crew:  2500–2800,
+ beam: 38.9 m ,
+ draught: 11 m,
+ armament: 9 × 46 cm Type 94 guns (3x3)_
+           6 × 15.5 cm 3rd Year Type guns (2x3)_
+           24 × 127 mm Type 89 (12x2)_
+           162 × 25 mm Type 96 AA guns_
+           4 × 13.2 mm Type 93 (2x2)
+};
 </instances>

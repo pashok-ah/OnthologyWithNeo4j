@@ -21,7 +21,7 @@ public class Main {
             registerShutdownHook(db);
 
             Ontology ontology = new Ontology(db, INPUT_FILE_PATH);
-
+            ontology.test();
             db.shutdown();
         } catch (IOException e) {
             e.printStackTrace();

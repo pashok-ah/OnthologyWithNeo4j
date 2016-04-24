@@ -38,13 +38,12 @@ public class ToNeo4jImporter {
         }
     }
 
-    public HashMap<String, Node> tryInitializeDatabase() {
+    public void tryInitializeDatabase() {
         try (Transaction tx = db.beginTx()) {
             createClasses(getStringByTagName(CLASSES_TAG_NAME));
             createRelationships(getStringByTagName(RELATIONSHIPS_TAG_NAME));
             createInstances(getStringByTagName(INSTANCES_TAG_NAME));
             tx.success();
-            return nodesMap;
         }
     }
 
@@ -53,13 +52,14 @@ public class ToNeo4jImporter {
         for (String classString : classesStrings) {
             try {
                 String className = classString.split("\\{")[0];
-                HashMap<String, String> properties = getProperties(classString);
-
                 Node newNode = db.createNode();
                 newNode.addLabel(Ontology.NodeTypes.CLASS);
                 newNode.setProperty("name", className);
-                for (Map.Entry<String, String> entry : properties.entrySet()) {
-                    newNode.setProperty(entry.getKey(), entry.getValue());
+                if(classString.length()-className.length() > 2) {
+                    HashMap<String, String> properties = getProperties(classString);
+                    for (Map.Entry<String, String> entry : properties.entrySet()) {
+                        newNode.setProperty(entry.getKey(), entry.getValue());
+                    }
                 }
                 nodesMap.put(className, newNode);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -80,10 +80,10 @@ public class ToNeo4jImporter {
                         Ontology.RelTypes.SUBCLASS_OF);
 
             } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("createRelationships " + input);
+                System.out.println("createRelationships " + relationshipString);
                 e.printStackTrace();
             } catch (NullPointerException e) {
-                System.out.println("createRelationships " + input + " maybe class Name not found");
+                System.out.println("createRelationships " + relationshipString + " maybe class Name not found");
                 e.printStackTrace();
             }
         }
@@ -133,7 +133,7 @@ public class ToNeo4jImporter {
             if (properyAndValue.length == 2) {
                 resultMap.put(properyAndValue[0], properyAndValue[1]);
             } else {
-                throw new IllegalArgumentException("getProperties " + classString);
+                throw new IllegalArgumentException("getProperties wrong property:" + property);
             }
 
         }
