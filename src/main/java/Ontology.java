@@ -51,9 +51,9 @@ public class Ontology {
 
     public void test() {
         System.out.println("Get properties test...");
-        String classNameToFindproperties = "Bireme";
+        Node classNameToFindproperties = findNodeByNameAndType("Bireme", NodeTypes.CLASS).get();
         System.out.println("Bireme{");
-        printProperties(getAllPropertiesByNode(findNodeByNameAndType(classNameToFindproperties, NodeTypes.CLASS)));
+        printProperties(getAllPropertiesByNode(classNameToFindproperties));
         System.out.println("}");
         System.out.println("Get all instances test...");
         String classNameToFindInstances = "SailShip";
@@ -106,44 +106,67 @@ public class Ontology {
     }
 
     private ArrayList<Node> findAllSubnodes(final String name, final RelTypes relationshipTypeToInclude) {
-        Node startNode = findNodeByNameAndType(name, NodeTypes.CLASS);
-        org.neo4j.graphdb.traversal.Traverser traverser =
-                findDownwardNodesWithoutStart(startNode, relationshipTypeToInclude);
-        return getNodesFromTraverser(traverser);
+        Optional<Node> tryFindNode = findNodeByNameAndType(name, NodeTypes.CLASS);
+        if(tryFindNode.isPresent()){
+            Node startNode = tryFindNode.get();
+
+            org.neo4j.graphdb.traversal.Traverser traverser =
+                    findDownwardNodesWithoutStart(startNode, relationshipTypeToInclude);
+            return getNodesFromTraverser(traverser);
+        }
+        else{
+            return new ArrayList<>();
+        }
     }
 
     private boolean isInstaceOf(String instanceName, String className) {
-        Node startNode = findNodeByNameAndType(instanceName, NodeTypes.INSTANCE);
-        org.neo4j.graphdb.traversal.Traverser traverser = findUpwardNodesWithoutStart(startNode);
-        ArrayList<Node> classNodesOfStartNode = getNodesFromTraverser(traverser);
-        try (Transaction tx = db.beginTx()) {
-            for (Node node : classNodesOfStartNode) {
-                if (node.hasProperty("name") && node.getProperty("name").equals(className))
-                    return true;
+        Optional<Node> tryFindNode = findNodeByNameAndType(instanceName, NodeTypes.INSTANCE);
+        if(tryFindNode.isPresent()) {
+            Node startNode = tryFindNode.get();
+            org.neo4j.graphdb.traversal.Traverser traverser = findUpwardNodesWithoutStart(startNode);
+            ArrayList<Node> classNodesOfStartNode = getNodesFromTraverser(traverser);
+            try (Transaction tx = db.beginTx()) {
+                for (Node node : classNodesOfStartNode) {
+                    if (node.hasProperty("name") && node.getProperty("name").equals(className))
+                        return true;
+                }
+                tx.success();
             }
-            tx.success();
+            return false;
         }
-        return false;
+            else{
+                return false;
+            }
     }
 
     private boolean hasProperty(final String name, final NodeTypes nodeType,
                                 final String propertyName,
                                 final String propertyValue) {
-        Node startNode = findNodeByNameAndType(name, nodeType);
-        HashMap<String, String> allNodeProperties = getAllPropertiesByNode(startNode);
-        return allNodeProperties.containsKey(propertyName) &&
-                allNodeProperties.get(propertyName).equals(propertyValue);
+        Optional<Node> tryFindNode = findNodeByNameAndType(name, nodeType);
+        if(tryFindNode.isPresent()) {
+            Node startNode = tryFindNode.get();
+            HashMap<String, String> allNodeProperties = getAllPropertiesByNode(startNode);
+            return allNodeProperties.containsKey(propertyName) &&
+                    allNodeProperties.get(propertyName).equals(propertyValue);
+        }
+        else{
+            return false;
+        }
     }
 
     private String getValueOfProperty(final String name, final NodeTypes nodeType,
                                       final String propertyName) {
-        Node startNode = findNodeByNameAndType(name, nodeType);
-        HashMap<String, String> allNodeProperties = getAllPropertiesByNode(startNode);
-        if (allNodeProperties.containsKey(propertyName)) {
-            return allNodeProperties.get(propertyName);
-        } else {
-            return "";
+        Optional<Node> tryFindNode = findNodeByNameAndType(name, nodeType);
+        if(tryFindNode.isPresent()) {
+            Node startNode = tryFindNode.get();
+            HashMap<String, String> allNodeProperties = getAllPropertiesByNode(startNode);
+            if (allNodeProperties.containsKey(propertyName)) {
+                return allNodeProperties.get(propertyName);
+            } else {
+                return "";
+            }
         }
+        else return "";
     }
 
     private HashSet<Node> findAllNodesWithPropertyValue(final String propertyName,
@@ -224,12 +247,12 @@ public class Ontology {
         return td.traverse(startNode);
     }
 
-    private Node findNodeByNameAndType(final String name, final NodeTypes type) {
+    private Optional<Node> findNodeByNameAndType(final String name, final NodeTypes type) {
         Node resultNode;
         try (Transaction tx = db.beginTx()) {
             resultNode = db.findNode(type, "name", name);
             tx.success();
         }
-        return resultNode;
+        return Optional.ofNullable(resultNode);
     }
 }
